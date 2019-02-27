@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/hulkoba/doma-bot/issues"
   },
-  "homepage": "https://github.com/hulkoba/doma-bot#readme"
+  "homepage": "https://github.com/hulkoba/doma-bot#readme",
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "node-cron": "^2.0.3",
+    "node-telegram-bot-api": "^0.30.0",
+    "shelljs": "^0.8.3"
+  }
 }
