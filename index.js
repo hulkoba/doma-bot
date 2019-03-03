@@ -7,7 +7,7 @@ const token = process.env.BOT_TOKEN
 
 const bot = new telegramBot(token)
 
-bot.onText(/\/init_bot/,(msg, match)=>{
+bot.onText(/\/start/,(msg, match)=>{
   bot.sendMessage(
     msg.chat.id,
     'I am alive!'
