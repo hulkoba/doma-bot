@@ -1,0 +1,6 @@
+{
+  "every-two-minutes": "*/2 * * * *",
+  "every-day-6pm": "0 0 18 * * *",
+  "running-on-sundays-of-january-and-september": "* * * January,September Sunday",
+  "running-on-sundays-of-january-and-september-too": "* * * Jan,Sep Sun"
+}
