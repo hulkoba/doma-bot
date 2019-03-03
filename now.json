@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "public": true,
+  "env": {
+    "BOT_TOKEN": "BOT_TOKEN",
+    "SECRET": "@bot-token"
+  }
+}

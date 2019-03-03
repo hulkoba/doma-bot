@@ -1,6 +1,6 @@
 const telegramBot = require('node-telegram-bot-api')
 const cron = require("node-cron")
-const env = require('dotenv').config()
+const env = require('now-env')
 
 const tasks = require('./tasks.json')
 const token = process.env.BOT_TOKEN
