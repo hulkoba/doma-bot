@@ -5,7 +5,14 @@ const env = require('now-env')
 const tasks = require('./tasks.json')
 const token = process.env.BOT_TOKEN
 
-const bot = new telegramBot(token)
+const options = {
+  webHook: {
+    // Just use 443 directly
+    port: 443
+  }
+};
+const bot = new telegramBot(token, options)
+bot.setWebHook(`https://doma-bot-jxxc0abhi.now.sh/bot${token}`)
 
 bot.onText(/\/init/,(msg, match)=>{
   bot.sendMessage(
@@ -23,6 +30,7 @@ bot.onText(/\/init/,(msg, match)=>{
 * month 1-12
 * dayOfWeek 0-7
 */
+console.log('hello', bot)
 const initCronJobs = (message) => {
   for (const task in tasks) {
     const pointInTime = tasks[task]
