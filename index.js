@@ -6,12 +6,11 @@ const tasks = require('./tasks.json')
 const token = process.env.BOT_TOKEN
 
 const bot = new telegramBot(token)
-// const bot = new telegramBot(token, { polling:true })
 
 bot.onText(/\/init/,(msg, match)=>{
   bot.sendMessage(
     msg.chat.id,
-    `Hey! ${msg.chat.first_name} :wave:`
+    'I am alive!'
   )
   initCronJobs(msg)
 })
