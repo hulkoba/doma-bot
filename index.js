@@ -5,21 +5,17 @@ const env = require('now-env')
 const tasks = require('./tasks.json')
 const token = process.env.BOT_TOKEN
 
-const options = {
-  webHook: {
-    // Just use 443 directly
-    port: 443
-  }
-};
-const bot = new telegramBot(token, options)
-bot.setWebHook(`https://doma-bot-jxxc0abhi.now.sh/bot${token}`)
+const bot = new telegramBot(token)
 
-bot.onText(/\/init/,(msg, match)=>{
+bot.onText(/\/init_bot/,(msg, match)=>{
   bot.sendMessage(
     msg.chat.id,
     'I am alive!'
-  )
-  initCronJobs(msg)
+  ).then(() => {
+    initCronJobs(msg)
+  }).catch(error => {
+    bot.sendMessage(msg.chat.id, `Möp möp! ${error}`)
+  })
 })
 
 /*
@@ -30,7 +26,6 @@ bot.onText(/\/init/,(msg, match)=>{
 * month 1-12
 * dayOfWeek 0-7
 */
-console.log('hello', bot)
 const initCronJobs = (message) => {
   for (const task in tasks) {
     const pointInTime = tasks[task]
