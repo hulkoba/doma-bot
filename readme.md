@@ -1,6 +1,6 @@
-# Doma Bot as a remnder for tasks
+# Doma Bot as a reminder for tasks
 
-## deployed with Now
+## Deployed with Now
 Website: (https://zeit.co/now)[https://zeit.co/now]
 As a rule of thumb, telegram bots are deployed over SSL, which now provides. Now is a platform which allows you to host your node applications with ease. You can head over to Zeit.co if you want to know more about Now. Now we'll install one last package in our project.
 
@@ -18,3 +18,12 @@ If successful, you should get this JSON response:
   "description":"Webhook was set"
 }
 ```
+## Req
+- [ ] /help
+- [ ] /ich
+    add scores --> couch/firebase?
+- [ ] /done task
+    other tasks ,
+    add scores --> couch/firebase?
+- [ ] /show
+    shows summary
