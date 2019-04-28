@@ -64,15 +64,13 @@ bot.onText(/\/start/,(msg, match) => {
 * dayOfWeek 0-7
 */
 const initCronJobs = (message) => {
-  for (const task in tasks) {
-    const pointInTime = tasks[task]
-
-    cron.schedule(pointInTime, () => {
+  tasks.forEach(task => {
+    cron.schedule(task.pointInTime, () => {
       bot.sendMessage(
         message.chat.id,
-        `+++ Erinnerung +++ \n\r${task} muss erledigt werden`)
+        `+++ Erinnerung +++ \n\r${task.name} muss erledigt werden`)
     })
-  }
+  })
 }
 
 const syncDbs = () => {

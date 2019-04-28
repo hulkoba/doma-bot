@@ -1,7 +1,27 @@
-{
-  "every-two-minutes": "*/2 * * * *",
-  "every-day-3pm": "0 0 15 * * *",
-  "every-day-6pm": "0 0 18 * * *",
-  "running-on-sundays-of-january-and-september": "* * * January,September Sunday",
-  "running-on-sundays-of-january-and-september-too": "* * * Jan,Sep Sun"
-}
+[
+  {
+    "name": "every-two-minutes",
+    "pointInTime": "*/2 * * * *",
+    "scores": 3
+  },
+  {
+    "name": "every-day-3pm",
+    "pointInTime": "0 0 15 * * *",
+    "scores": 3
+  },
+  {
+    "name": "every-day-6pm",
+    "pointInTime": "0 0 18 * * *",
+    "scores": 3
+  },
+  {
+    "name": "running-on-sundays-of-january-and-september",
+    "pointInTime": "* * * January,September Sunday",
+    "scores": 3
+  },
+  {
+    "name": "running-on-sundays-of-january-and-september-too",
+    "pointInTime": "* * * Jan,Sep Sun",
+    "scores": 3
+  }
+]
