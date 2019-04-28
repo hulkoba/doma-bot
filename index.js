@@ -28,14 +28,33 @@ bot.onText(/\/start/,(msg, match) => {
       const results = tasks.map((task, index) => {
         return {
           type: "article",
-          id: index,
+          id: `${task.name}/${task.scores}`,
           title: task.name,
           input_message_content: {
-            message_text: `${query.from.first_name} hat ${task.name} erledigt und bekommt ${task.scores} Punkte`
+            message_text: `${query.from.first_name} hat ${task.name} erledigt und bekommt ${task.scores} Punkte`,
+            disable_web_page_preview: true
           }
         }
       })
       bot.answerInlineQuery(query.id, results)
+    })
+    
+    bot.on("chosen_inline_result", (query) => {
+      console.log('### query', query)
+      // const [taskName, score] = query.result_id.split['/']
+      // const humanTasks = tasks
+      // if(!tasks.includes(taskName)) humanTasks.push(taskName)
+      
+      const domaHuman = {
+        _id: String(query.from.id),
+        name: query.from.first_name
+      }
+      console.log('### domaHuman', domaHuman)
+      localDb.put(domaHuman).then(response => {
+        console.log('### response', response)
+      }).catch(error => {
+        console.log('DB error', error)
+      })
     })
     
     // eventListener for /list

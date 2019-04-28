@@ -6,7 +6,7 @@
   },
   {
     "name": "Rasen mähen",
-    "pointInTime": "* * * April,June,August Sunday",
+    "pointInTime": "* * * April,June,August Monday",
     "scores": 5
   },
   {
