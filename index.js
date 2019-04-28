@@ -5,9 +5,9 @@ const env = require('now-env')
 const tasks = require('./tasks.json')
 const token = process.env.BOT_TOKEN
 
-const bot = new telegramBot(token)
-
-bot.onText(/\/start/,(msg, match)=>{
+const bot = new telegramBot(token, { polling: true })
+console.log('### bot', bot)
+bot.onText(/\/start/,(msg, match) => {
   bot.sendMessage(
     msg.chat.id,
     'I am alive!'
@@ -33,7 +33,7 @@ const initCronJobs = (message) => {
     cron.schedule(pointInTime, () => {
       bot.sendMessage(
         message.chat.id,
-        `+++ Erinnerung +++ %0A%0A${task} muss erledigt werden`)
+        `+++ Erinnerung +++ \n\r${task} muss erledigt werden`)
     })
   }
 }
