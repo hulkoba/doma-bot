@@ -1,5 +1,15 @@
 [
   {
+    "name": "heizen",
+    "pointInTime": "0 0 20 * *",
+    "scores": 5
+  },
+  {
+    "name": "Rasen mähen",
+    "pointInTime": "* * * April,June,August Sunday",
+    "scores": 5
+  },
+  {
     "name": "every-two-minutes",
     "pointInTime": "*/2 * * * *",
     "scores": 3

@@ -24,8 +24,19 @@ bot.onText(/\/start/,(msg, match) => {
     
     // EventListener for /check
     // update domas -> add score
-    // msg.user.id,
-    // msg.user.first_name
+    bot.on("inline_query", (query) => {
+      const results = tasks.map((task, index) => {
+        return {
+          type: "article",
+          id: index,
+          title: task.name,
+          input_message_content: {
+            message_text: `${query.from.first_name} hat ${task.name} erledigt und bekommt ${task.scores} Punkte`
+          }
+        }
+      })
+      bot.answerInlineQuery(query.id, results)
+    })
     
     // eventListener for /list
     // get all domas with scores
