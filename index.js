@@ -1,18 +1,55 @@
+const PouchDB = require('pouchdb')
 const telegramBot = require('node-telegram-bot-api')
 const cron = require("node-cron")
-const env = require('now-env')
+const env = require('dotenv').config()
 
-const tasks = require('./tasks.json')
+
 const token = process.env.BOT_TOKEN
+const tasks = require('./tasks.json')
+
+const localDb = new PouchDB('domas')
+const remoteDB = new PouchDB(process.env.COUCH_URL)
 
 const bot = new telegramBot(token, { polling: true })
-console.log('### bot', bot)
+// console.log('### bot', bot)
+
 bot.onText(/\/start/,(msg, match) => {
+  syncDbs()
+  
   bot.sendMessage(
     msg.chat.id,
     'I am alive!'
   ).then(() => {
     initCronJobs(msg)
+    
+    // EventListener for /check
+    // update domas -> add score
+    // msg.user.id,
+    // msg.user.first_name
+    
+    // eventListener for /list
+    // get all domas with scores
+    bot.onText(/\/list/,(message, match) => {
+      // get all domas
+      localDb.allDocs({
+        include_docs: true
+      }).then(function(result) {
+        const domas = result.rows.map(c => {
+          return {
+            name: c.doc.name,
+            scores: c.doc.scores
+          }
+        })
+        let markdownDomas = ''
+        domas.forEach(u => {
+          markdownDomas += `${u.name}: ${u.scores} Punkte\n\r`
+        })
+        
+        bot.sendMessage(
+          message.chat.id,
+          markdownDomas)
+      })
+    })
   }).catch(error => {
     bot.sendMessage(msg.chat.id, `Möp möp! ${error}`)
   })
@@ -36,4 +73,17 @@ const initCronJobs = (message) => {
         `+++ Erinnerung +++ \n\r${task} muss erledigt werden`)
     })
   }
+}
+
+const syncDbs = () => {
+  localDb.sync(remoteDB, {
+    live: true,
+    include_docs: true,
+    retry: true
+  })
+  .on('change', change => console.log(change, 'changed!'))
+  .on('paused', info => console.log('replication paused.'))
+  .on('active', info => console.log('replication resumed.'))
+  .on('denied', info => console.log('+++ DENIED +++', info))
+  .on('error', err => console.log('+++ ERROR ERROR ERROR +++.', err))
 }
