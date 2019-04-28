@@ -18,14 +18,13 @@ bot.onText(/\/start/,(msg, match) => {
   
   bot.sendMessage(
     msg.chat.id,
-    'I am alive!'
+    'Hello Doma peeps!'
   ).then(() => {
     initCronJobs(msg)
     
-    // EventListener for /check
     // update domas -> add score
     bot.on("inline_query", (query) => {
-      const results = tasks.map((task, index) => {
+      const results = tasks.map(task => {
         return {
           type: "article",
           id: `${task.name}/${task.scores}`,
@@ -40,20 +39,28 @@ bot.onText(/\/start/,(msg, match) => {
     })
     
     bot.on("chosen_inline_result", (query) => {
-      console.log('### query', query)
-      // const [taskName, score] = query.result_id.split['/']
-      // const humanTasks = tasks
-      // if(!tasks.includes(taskName)) humanTasks.push(taskName)
+      let [taskName, score] = query.result_id.split('/')
+      score = Number(score)
+      const id = String(query.from.id)
       
-      const domaHuman = {
-        _id: String(query.from.id),
-        name: query.from.first_name
-      }
-      console.log('### domaHuman', domaHuman)
-      localDb.put(domaHuman).then(response => {
-        console.log('### response', response)
+      localDb.get(id).then(doc => {
+        const updatedHuman = {
+          ...doc,
+          scores: doc.scores + score,
+          tasks: updatedTasks(doc.tasks, taskName)
+        }
+        return localDb.put(updatedHuman).then().catch(error => console.log('DB error', error))
       }).catch(error => {
-        console.log('DB error', error)
+        console.log('### error', error)
+        if(error.status === 404) {
+          return localDb.put({
+            _id: id,
+            name: query.from.first_name,
+            tasks: [taskName],
+            scores: score
+          }).then().catch(error => console.log('DB error', error))
+          
+        }
       })
     })
     
@@ -114,4 +121,11 @@ const syncDbs = () => {
   .on('active', info => console.log('replication resumed.'))
   .on('denied', info => console.log('+++ DENIED +++', info))
   .on('error', err => console.log('+++ ERROR ERROR ERROR +++.', err))
+}
+
+const updatedTasks = (docTasks = [], taskName) => {
+  if(!docTasks.includes(taskName)) {
+    docTasks.push(taskName)
+  }
+  return docTasks
 }
