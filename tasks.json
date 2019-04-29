@@ -1,17 +1,105 @@
 [
   {
-    "name": "heizen",
+    "name": "Unkraut entfernen",
     "pointInTime": "0 0 20 * *",
-    "scores": 5
+    "scores": 0.5
+  },
+  {
+    "name": "Gießen",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 1
   },
   {
     "name": "Rasen mähen",
     "pointInTime": "* * * April,June,August Monday",
-    "scores": 5
+    "scores": 1
   },
   {
+    "name": "Laub harken",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 1
+  },
+  {
+    "name": "Baumschnitt",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 1
+  },
+  {
+    "name": "Türen/Fenster putzen",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 0.5
+  },
+  {
+    "name": "Treppe wischen",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 0.5
+  },
+  {
+    "name": "Winterdienst",
+    "pointInTime": "* * * Jan,Feb,Dec Sun",
+    "scores": 2
+  },
+  {
+    "name": "Holz umlagern",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 1
+  },
+  {
+    "name": "Anheizen",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 0.5
+  },
+  {
+    "name": "Heizen",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 0.25
+  },
+  {
+    "name": "Heizung reinigen",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 0.5
+  },
+  {
+    "name": "Heizung warten",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 1
+  },
+  {
+    "name": "Regenrinne reinigen",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 2
+  },
+  {
+    "name": "Sperrmüll",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 1
+  },
+  {
+    "name": "Streichen",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 1
+  },
+  {
+    "name": "Bauklo reinigen",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 1
+  },
+  {
+    "name": "Baumaßnahmen",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 1
+  },
+  {
+    "name": "Buchhaltung",
+    "pointInTime": "* * * April,June,August Monday",
+    "scores": 1
+  }
+]
+
+/*
+  {
     "name": "every-two-minutes",
-    "pointInTime": "*/2 * * * *",
+    "pointInTime": "*//*2* * * * *",
     "scores": 3
   },
   {
@@ -33,5 +121,4 @@
     "name": "running-on-sundays-of-january-and-september-too",
     "pointInTime": "* * * Jan,Sep Sun",
     "scores": 3
-  }
-]
+  }*/
