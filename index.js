@@ -18,14 +18,51 @@ bot.onText(/\/start/,(msg, match) => {
   
   bot.sendMessage(
     msg.chat.id,
-    'I am alive!'
+    'Hello Doma peeps!'
   ).then(() => {
     initCronJobs(msg)
     
-    // EventListener for /check
     // update domas -> add score
-    // msg.user.id,
-    // msg.user.first_name
+    bot.on("inline_query", (query) => {
+      const results = tasks.map(task => {
+        return {
+          type: "article",
+          id: `${task.name}/${task.scores}`,
+          title: task.name,
+          input_message_content: {
+            message_text: `${query.from.first_name} hat ${task.name} erledigt und bekommt ${task.scores} Punkte`,
+            disable_web_page_preview: true
+          }
+        }
+      })
+      bot.answerInlineQuery(query.id, results)
+    })
+    
+    bot.on("chosen_inline_result", (query) => {
+      let [taskName, score] = query.result_id.split('/')
+      score = Number(score)
+      const id = String(query.from.id)
+      
+      localDb.get(id).then(doc => {
+        const updatedHuman = {
+          ...doc,
+          scores: doc.scores + score,
+          tasks: updatedTasks(doc.tasks, taskName)
+        }
+        return localDb.put(updatedHuman).then().catch(error => console.log('DB error', error))
+      }).catch(error => {
+        console.log('### error', error)
+        if(error.status === 404) {
+          return localDb.put({
+            _id: id,
+            name: query.from.first_name,
+            tasks: [taskName],
+            scores: score
+          }).then().catch(error => console.log('DB error', error))
+          
+        }
+      })
+    })
     
     // eventListener for /list
     // get all domas with scores
@@ -64,15 +101,13 @@ bot.onText(/\/start/,(msg, match) => {
 * dayOfWeek 0-7
 */
 const initCronJobs = (message) => {
-  for (const task in tasks) {
-    const pointInTime = tasks[task]
-
-    cron.schedule(pointInTime, () => {
+  tasks.forEach(task => {
+    cron.schedule(task.pointInTime, () => {
       bot.sendMessage(
         message.chat.id,
-        `+++ Erinnerung +++ \n\r${task} muss erledigt werden`)
+        `+++ Erinnerung +++ \n\r${task.name} muss erledigt werden`)
     })
-  }
+  })
 }
 
 const syncDbs = () => {
@@ -86,4 +121,11 @@ const syncDbs = () => {
   .on('active', info => console.log('replication resumed.'))
   .on('denied', info => console.log('+++ DENIED +++', info))
   .on('error', err => console.log('+++ ERROR ERROR ERROR +++.', err))
+}
+
+const updatedTasks = (docTasks = [], taskName) => {
+  if(!docTasks.includes(taskName)) {
+    docTasks.push(taskName)
+  }
+  return docTasks
 }
