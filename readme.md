@@ -12,9 +12,9 @@
 
 ## Req
 - [ ] /help
-- [ ] /list
+- [x] /list
     shows summary
-- [ ] /done
+- [x] /done
     add scores --> couch
 - [ ] /done task
     other tasks ,
