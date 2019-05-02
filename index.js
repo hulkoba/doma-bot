@@ -11,7 +11,6 @@ const localDb = new PouchDB('domas')
 const remoteDB = new PouchDB(process.env.COUCH_URL)
 
 const bot = new telegramBot(token, { polling: true })
-// console.log('### bot', bot)
 
 bot.onText(/\/start/,(msg, match) => {
   syncDbs()
@@ -30,7 +29,7 @@ bot.onText(/\/start/,(msg, match) => {
           id: `${task.name}/${task.scores}`,
           title: task.name,
           input_message_content: {
-            message_text: `${query.from.first_name} hat ${task.name} erledigt und bekommt ${task.scores} Punkte`,
+            message_text: `hat ${task.name} erledigt und bekommt ${task.scores} Punkte`,
             disable_web_page_preview: true
           }
         }
