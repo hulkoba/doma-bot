@@ -65,7 +65,7 @@ bot.onText(/\/start/,(msg, match) => {
     
     // eventListener for /list
     // get all domas with scores
-    bot.onText(/\/list/,(message, match) => {
+    bot.onText(/\/domas/,(message, match) => {
       // get all domas
       localDb.allDocs({
         include_docs: true
