@@ -19,7 +19,9 @@ bot.onText(/\/start/,(msg, match) => {
     msg.chat.id,
     'Hello Doma peeps!'
   ).then(() => {
-    initCronJobs(msg)
+    // uncomment this to activate task-alarms
+    // Need to adapt the pointInTime for each task
+    // initCronJobs(msg)
     
     // update domas -> add score
     bot.on("inline_query", (query) => {
@@ -37,6 +39,8 @@ bot.onText(/\/start/,(msg, match) => {
       bot.answerInlineQuery(query.id, results)
     })
     
+    // on selected task
+    // increase score and update doma-human
     bot.on("chosen_inline_result", (query) => {
       let [taskName, score] = query.result_id.split('/')
       score = Number(score)
@@ -63,7 +67,6 @@ bot.onText(/\/start/,(msg, match) => {
       })
     })
     
-    // eventListener for /list
     // get all domas with scores
     bot.onText(/\/domas/,(message, match) => {
       // get all domas
