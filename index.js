@@ -3,31 +3,33 @@ const telegramBot = require('node-telegram-bot-api')
 const cron = require("node-cron")
 const env = require('dotenv').config()
 
-
-const token = process.env.BOT_TOKEN
 const tasks = require('./tasks.json')
 
 const localDb = new PouchDB('domas')
 const remoteDB = new PouchDB(process.env.COUCH_URL)
 
+const token = process.env.BOT_TOKEN
 const bot = new telegramBot(token, { polling: true })
 
 bot.onText(/\/start/,(msg, match) => {
   syncDbs()
-  
+
   bot.sendMessage(
     msg.chat.id,
     'Hello Doma peeps!'
   ).then(() => {
     // uncomment this to activate task-alarms
-    // Need to adapt the pointInTime for each task
+    // TODO Need to adapt the pointInTime for each task
     // initCronJobs(msg)
-    
-    // update domas -> add score
+
+    /*
+    show all available tasks
+    and show success message on click
+    */
     bot.on("inline_query", (query) => {
       const results = tasks.map(task => {
         return {
-          type: "article",
+          type: 'article',
           id: `${task.name}/${task.scores}`,
           title: task.name,
           input_message_content: {
@@ -36,16 +38,20 @@ bot.onText(/\/start/,(msg, match) => {
           }
         }
       })
+      // update domas -> add score
+      console.log('query', query)
       bot.answerInlineQuery(query.id, results)
     })
-    
-    // on selected task
-    // increase score and update doma-human
+
+    /*
+    on selected task -> increase score and update doma-human
+    */
     bot.on("chosen_inline_result", (query) => {
       let [taskName, score] = query.result_id.split('/')
       score = Number(score)
       const id = String(query.from.id)
-      
+
+      // update domaDoc
       localDb.get(id).then(doc => {
         const updatedHuman = {
           ...doc,
@@ -54,7 +60,7 @@ bot.onText(/\/start/,(msg, match) => {
         }
         return localDb.put(updatedHuman).then().catch(error => console.log('DB error', error))
       }).catch(error => {
-        console.log('### error', error)
+        // Human does a task for the first time -> create domaDoc
         if(error.status === 404) {
           return localDb.put({
             _id: id,
@@ -62,13 +68,16 @@ bot.onText(/\/start/,(msg, match) => {
             tasks: [taskName],
             scores: score
           }).then().catch(error => console.log('DB error', error))
-          
+        } else {
+          console.log('error', error)
         }
       })
     })
-    
-    // get all domas with scores
-    bot.onText(/\/domas/,(message, match) => {
+
+    /*
+    type '/domas' to list all domas with scores
+    */
+     bot.onText(/\/domas/,(message, match) => {
       // get all domas
       localDb.allDocs({
         include_docs: true
@@ -83,7 +92,7 @@ bot.onText(/\/start/,(msg, match) => {
         domas.forEach(u => {
           markdownDomas += `${u.name}: ${u.scores} Punkte\n\r`
         })
-        
+
         bot.sendMessage(
           message.chat.id,
           markdownDomas)
@@ -119,8 +128,8 @@ const syncDbs = () => {
     retry: true
   })
   .on('change', change => console.log(change, 'changed!'))
-  .on('paused', info => console.log('replication paused.'))
-  .on('active', info => console.log('replication resumed.'))
+  // .on('paused', info => console.log('replication paused.'))
+  // .on('active', info => console.log('replication resumed.'))
   .on('denied', info => console.log('+++ DENIED +++', info))
   .on('error', err => console.log('+++ ERROR ERROR ERROR +++.', err))
 }
