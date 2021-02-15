@@ -1,0 +1,2 @@
+BOT_TOKEN=abcxyz
+COUCH_URL=http://<NAME>:<PWD>@localhost:5984/
