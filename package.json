@@ -19,7 +19,8 @@
   "dependencies": {
     "dotenv": "^6.2.0",
     "node-cron": "^2.0.3",
+    "node-ical": "^0.12.8",
     "node-telegram-bot-api": "^0.51.0",
-    "pouchdb": "^7.0.0"
+    "pouchdb": "^7.2.2"
   }
 }
