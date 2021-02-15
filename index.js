@@ -1,9 +1,8 @@
 const PouchDB = require('pouchdb')
 const telegramBot = require('node-telegram-bot-api')
-const cron = require("node-cron")
-const env = require('dotenv').config()
+require('dotenv').config()
 
-const tasks = require('./tasks.json')
+const { initTaskJobs, getTaskAnswers } = require('./tasks.js')
 
 const localDb = new PouchDB('domas')
 const remoteDB = new PouchDB(process.env.COUCH_URL)
@@ -20,33 +19,21 @@ bot.onText(/\/start/,(msg, match) => {
   ).then(() => {
     // uncomment this to activate task-alarms
     // TODO Need to adapt the pointInTime for each task
-    // initCronJobs(msg)
+    // initTaskJobs({ chatId: message.chat.id, bot })
 
-    /*
-    show all available tasks
-    and show success message on click
-    */
-    bot.on("inline_query", (query) => {
-      const results = tasks.map(task => {
-        return {
-          type: 'article',
-          id: `${task.name}/${task.scores}`,
-          title: task.name,
-          input_message_content: {
-            message_text: `hat ${task.name} erledigt und bekommt ${task.scores} Punkte`,
-            disable_web_page_preview: true
-          }
-        }
-      })
-      // update domas -> add score
-      console.log('query', query)
+    bot.on('inline_query', (query) => {
+      /*
+      show all available tasks
+      and show success message on click
+      */
+      const results = getTaskAnswers()
       bot.answerInlineQuery(query.id, results)
     })
 
     /*
     on selected task -> increase score and update doma-human
     */
-    bot.on("chosen_inline_result", (query) => {
+    bot.on('chosen_inline_result', (query) => {
       let [taskName, score] = query.result_id.split('/')
       score = Number(score)
       const id = String(query.from.id)
@@ -77,7 +64,7 @@ bot.onText(/\/start/,(msg, match) => {
     /*
     type '/domas' to list all domas with scores
     */
-     bot.onText(/\/domas/,(message, match) => {
+    bot.onText(/\/domas/,(message, match) => {
       // get all domas
       localDb.allDocs({
         include_docs: true
@@ -103,24 +90,6 @@ bot.onText(/\/start/,(msg, match) => {
   })
 })
 
-/*
-* second 0-59 | optional
-* minute 0-59
-* hour 0-23
-* dayOfMonth 1-31
-* month 1-12
-* dayOfWeek 0-7
-*/
-const initCronJobs = (message) => {
-  tasks.forEach(task => {
-    cron.schedule(task.pointInTime, () => {
-      bot.sendMessage(
-        message.chat.id,
-        `+++ Erinnerung +++ \n\r${task.name} muss erledigt werden`)
-    })
-  })
-}
-
 const syncDbs = () => {
   localDb.sync(remoteDB, {
     live: true,
@@ -129,7 +98,7 @@ const syncDbs = () => {
   })
   .on('change', change => console.log(change, 'changed!'))
   // .on('paused', info => console.log('replication paused.'))
-  // .on('active', info => console.log('replication resumed.'))
+  .on('active', info => console.log('replication resumed.', info))
   .on('denied', info => console.log('+++ DENIED +++', info))
   .on('error', err => console.log('+++ ERROR ERROR ERROR +++.', err))
 }
