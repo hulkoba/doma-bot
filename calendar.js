@@ -14,6 +14,7 @@ const checkCalendar = ({ bot, chatId }) => {
   // check calendar at 5PM
   cron.schedule('0 0 17 * * *', () => {
     // read calender
+    // TODO fetch calendar from http://www.entsorgungsbetrieb-mol.de/de/tourenplan-20202021.html
     const events = ical.sync.parseFile('Abfuhrtermine.ics')
     const today = new Date()
 
