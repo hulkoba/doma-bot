@@ -3,9 +3,10 @@ const telegramBot = require('node-telegram-bot-api')
 require('dotenv').config()
 
 const { initTaskJobs, getTaskAnswers } = require('./tasks.js')
+const { checkCalendar } = require('./calendar.js')
 
 const localDb = new PouchDB('domas')
-const remoteDB = new PouchDB(process.env.COUCH_URL)
+const remoteDB = new PouchDB(`${process.env.COUCH_URL}/domas`)
 
 const token = process.env.BOT_TOKEN
 const bot = new telegramBot(token, { polling: true })
@@ -15,11 +16,13 @@ bot.onText(/\/start/,(msg, match) => {
 
   bot.sendMessage(
     msg.chat.id,
-    'Hello Doma peeps!'
+    'Hallo Domas!'
   ).then(() => {
     // uncomment this to activate task-alarms
     // TODO Need to adapt the pointInTime for each task
     // initTaskJobs({ chatId: message.chat.id, bot })
+
+    checkCalendar({ bot, chatId: msg.chat.id })
 
     bot.on('inline_query', (query) => {
       /*
@@ -101,6 +104,16 @@ const syncDbs = () => {
   .on('active', info => console.log('replication resumed.', info))
   .on('denied', info => console.log('+++ DENIED +++', info))
   .on('error', err => console.log('+++ ERROR ERROR ERROR +++.', err))
+  localDB.info().then(function (info) {
+    console.log('localDB ', info)
+  }).catch(function(e) {
+    console.log(e)
+  })
+  remoteDB.info().then(function (info) {
+    console.log('remoteDB ', info)
+  }).catch(function(e) {
+    console.log(e)
+  })
 }
 
 const updatedTasks = (docTasks = [], taskName) => {
