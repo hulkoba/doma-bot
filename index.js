@@ -3,23 +3,32 @@ const telegramBot = require('node-telegram-bot-api')
 require('dotenv').config()
 
 const { initTaskJobs, getTaskAnswers } = require('./tasks.js')
+const { checkCalendar } = require('./calendar.js')
 
 const localDb = new PouchDB('domas')
-const remoteDB = new PouchDB(process.env.COUCH_URL)
+const remoteDB = new PouchDB(`${process.env.COUCH_URL}/domas`)
+// The remote database will not be created until you do an API call, e.g.: db.info().
+// The reason behind that is that the PouchDB constructor is completely synchronous, for ease of error handling.
+remoteDB.info().then(function (info) {
+  console.log('remoteDB ', info)
+})
 
 const token = process.env.BOT_TOKEN
 const bot = new telegramBot(token, { polling: true })
 
-bot.onText(/\/start/,(msg, match) => {
+bot.onText(/\/start/, (msg, match) => {
+
   syncDbs()
 
   bot.sendMessage(
     msg.chat.id,
-    'Hello Doma peeps!'
+    'Hallo Domas!'
   ).then(() => {
     // uncomment this to activate task-alarms
     // TODO Need to adapt the pointInTime for each task
     // initTaskJobs({ chatId: message.chat.id, bot })
+
+    checkCalendar({ bot, chatId: msg.chat.id })
 
     bot.on('inline_query', (query) => {
       /*
@@ -96,10 +105,10 @@ const syncDbs = () => {
     include_docs: true,
     retry: true
   })
-  .on('change', change => console.log(change, 'changed!'))
+  // .on('change', change => console.log(change, 'changed!'))
   // .on('paused', info => console.log('replication paused.'))
-  .on('active', info => console.log('replication resumed.', info))
-  .on('denied', info => console.log('+++ DENIED +++', info))
+  // .on('active', info => console.log('replication resumed.', info))
+  // .on('denied', info => console.log('+++ DENIED +++', info))
   .on('error', err => console.log('+++ ERROR ERROR ERROR +++.', err))
 }
 
