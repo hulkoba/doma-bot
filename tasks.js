@@ -26,7 +26,7 @@ const getTaskAnswers = () => {
       id: `${task.name}/${task.scores}`,
       title: task.name,
       input_message_content: {
-        message_text: `hat ${task.name} erledigt und bekommt ${task.scores} Punkte`,
+        message_text: `hat ${task.name} erledigt und bekommt ${task.scores} Punkte.`,
         disable_web_page_preview: true
       }
     }
