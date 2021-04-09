@@ -5,7 +5,7 @@ Bots are third-party applications that run inside Telegram. Users can interact w
 It checks every day at 5 am whether a garbage can is picked up the next day.
 It also offers the opportunity to track work and get points for it.
 
-This bot uses [Apache CouchDB](https://couchdb.apache.org/) and [pouchdb](https://pouchdb.com/) to store the data.
+This bot uses [Apache CouchDB](https://couchdb.apache.org/) to store the data.
 
 ## Usage
 1. Add @DomatoBot to your telegram group (Hofgezwitscher)
